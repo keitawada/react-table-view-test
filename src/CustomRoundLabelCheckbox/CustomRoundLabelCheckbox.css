@@ -1,0 +1,46 @@
+div.round-checkbox {
+  width: 24px;
+  height: 24px;
+  margin-right: 0;
+  display: inline-block;
+}
+
+div.round-checkbox label {
+  width: 15px;
+  height: 15px;
+  display: block;
+  position: relative;
+  top: 4px;
+  left: 4px;
+  background-color: white;
+  border: 1px solid rgb(175, 175, 175);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+div.round-checkbox label:after {
+  width: 7px;
+  height: 4px;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  display: block;
+  border: 2px solid rgb(175, 175, 175);
+  border-top: none;
+  border-right: none;
+  content: '';
+  opacity: 1;
+  transform: rotate(-45deg);
+}
+
+div.round-checkbox label.checked {
+  background-color: #66bb6a;
+  border: 1px solid #66bb6a;
+}
+
+div.round-checkbox label.checked:after {
+  border: 2px solid white;
+  border-top: none;
+  border-right: none;
+  opacity: 1;
+}
