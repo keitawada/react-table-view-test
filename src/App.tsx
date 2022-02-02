@@ -1,18 +1,8 @@
 import React from 'react'
 import './App.css'
-import CustomRoundLabelCheckbox from 'CustomRoundLabelCheckbox/CustomRoundLabelCheckbox'
-
+import UserInfoTable from 'UserInfoTable/UserInfoTable'
 const FROM_TABLE_ID = 1
 const TO_TABLE_ID = 2
-
-type UserInfoTableProps = {
-  userInfoList: UserInfoItem[]
-  onChecked: (index: number, isCkecked: boolean) => void
-}
-
-type UserInfoTableState = {
-  userInfoList: UserInfoItem[]
-}
 
 type UserInfoItem = {
   isChecked: boolean
@@ -23,144 +13,58 @@ type UserInfoItem = {
 }
 
 type TableManagerState = {
-  isDisplayedFromTable: boolean
-  isDisplayedToTable: boolean
-  fromTableDataList: UserInfoItem[]
-  toTableDataList: UserInfoItem[]
+  isDisplayedTableA: boolean
+  isDisplayedTableB: boolean
+  dataListTableA: UserInfoItem[]
+  dataListTableB: UserInfoItem[]
 }
 
-// const addBlankRow = (list: UserInfoItem[]) => {
-//   if (list.length < 10) {
-//     for (let i = list.length; list.length < 10; i++) {
-//       list.push({
-//         isChecked: false,
-//         userId: -1 * (i + 1),
-//         userName: '',
-//         mailAddress: '',
-//         teamId: -1 * (i + 1),
-//       })
-//     }
-//   }
-//   return list
-// }
-
-class UserInfoTable extends React.Component<
-  UserInfoTableProps,
-  UserInfoTableState
-> {
-  constructor(props: UserInfoTableProps) {
-    super(props)
-
-    this.state = {
-      userInfoList: props.userInfoList,
-    }
-  }
-
-  handleChecked = (index: number, isChecked: boolean) => {
-    const userInfoItem = this.props.userInfoList[index]
-    userInfoItem.isChecked = isChecked
-    this.props.onChecked(index, isChecked)
-    this.setState({ userInfoList: this.props.userInfoList })
-  }
-
-  render() {
-    // const userInfoList = addBlankRow(this.props.userInfoList)
-
-    const userInfoTableInnerJSX = this.props.userInfoList.map(
-      (item: UserInfoItem, index: number) => {
-        return (
-          <tr
-            key={item.userId.toString() + 'tableRow'}
-            className={index % 2 === 1 ? 'odd-row' : ''}
-          >
-            <td key={item.userId.toString() + 'checkbox'}>
-              <span className={item.userId < 0 ? 'hide' : ''}>
-                <CustomRoundLabelCheckbox
-                  key={item.userId}
-                  idx={index}
-                  checked={item.isChecked}
-                  onCheckChange={(isChecked) => {
-                    this.handleChecked(index, isChecked)
-                  }}
-                />
-              </span>
-            </td>
-            <td key={item.userId.toString() + 'userId'}>
-              <span className={item.userId < 0 ? 'hide' : ''}>
-                {item.userId}
-              </span>
-            </td>
-            <td key={item.userId.toString() + 'userName'}>
-              <span className={item.userId < 0 ? 'hide' : ''}>
-                {item.userName}
-              </span>
-            </td>
-            <td key={item.userId.toString() + 'mailAddress'}>
-              <span className={item.userId < 0 ? 'hide' : ''}>
-                {item.mailAddress}
-              </span>
-            </td>
-            <td key={item.userId.toString() + 'teamId'}>
-              <span className={item.userId < 0 ? 'hide' : ''}>
-                {item.teamId}
-              </span>
-            </td>
-          </tr>
-        )
-      },
-    )
-
-    return (
-      <div>
-        <table>
-          <tbody>
-            <tr>
-              <th>✓</th>
-              <th>ID</th>
-              <th>Name</th>
-              <th>E-mail</th>
-              <th>Team</th>
-            </tr>
-            {userInfoTableInnerJSX}
-          </tbody>
-        </table>
-      </div>
-    )
-  }
-}
-
+/**
+ * 表形式で表示している部分全体を含むコンポーネント
+ */
 class TableManager extends React.Component<{}, TableManagerState> {
   constructor(props: {}) {
     super(props)
 
     this.state = {
-      isDisplayedFromTable: true,
-      isDisplayedToTable: true,
-      fromTableDataList: [],
-      toTableDataList: [],
+      isDisplayedTableA: true,
+      isDisplayedTableB: true,
+      dataListTableA: [],
+      dataListTableB: [],
     }
   }
 
-  showTable(targetTable: number, changeEvent: any) {
+  /**
+   * 表示/非表示のチェックボックスを変更した際に、
+   * 該当する表の表示状態を切り替える。
+   * @param targetTable チェックを変更した方の表ID
+   * @param changeEvent チェックボックスのChangeEvent
+   */
+  displayTable(targetTable: number, changeEvent: any) {
     if (targetTable === FROM_TABLE_ID) {
-      console.log(changeEvent.target.checked)
       this.setState({
-        isDisplayedFromTable: changeEvent.target.checked,
+        isDisplayedTableA: changeEvent.target.checked,
       })
     } else {
-      console.log(changeEvent.target.checked)
       this.setState({
-        isDisplayedToTable: changeEvent.target.checked,
+        isDisplayedTableB: changeEvent.target.checked,
       })
     }
   }
 
+  /**
+   * Table(A)でチェックした行をTable(B)へ移動する。
+   * @param index チェックした行番号
+   * @param isChecked チェックした行のチェック状態(Trueになる)
+   */
   moveItemFromFromListToToList(index: number, isChecked: boolean): void {
     if (isChecked) {
-      const fromUserInfoList = this.state.fromTableDataList
-      const toUserInfoList = this.state.toTableDataList
+      const userListTableA = this.state.dataListTableA
+      const userListTableB = this.state.dataListTableB
 
-      const deleteItem = fromUserInfoList.splice(index, 1)
+      // Table(A)からチェックした行を削除
+      const deleteItem = userListTableA.splice(index, 1)
+      // 削除した行をTable(B)に追加
       const addItem = {
         isChecked: isChecked,
         userId: deleteItem[0].userId,
@@ -168,20 +72,29 @@ class TableManager extends React.Component<{}, TableManagerState> {
         mailAddress: deleteItem[0].mailAddress,
         teamId: deleteItem[0].teamId,
       }
-      toUserInfoList.push(addItem)
+      userListTableB.push(addItem)
+
+      // TableManagerコンポーネントの状態を更新する。
       this.setState({
-        fromTableDataList: fromUserInfoList,
-        toTableDataList: toUserInfoList,
+        dataListTableA: userListTableA,
+        dataListTableB: userListTableB,
       })
     }
   }
 
+  /**
+   * Table(B)でチェックを外した行をTable(A)へ移動する。
+   * @param index チェックを外した行番号
+   * @param isChecked チェックを外した行のチェック状態(Falseになる)
+   */
   moveItemFromToListToFromList(index: number, isChecked: boolean): void {
     if (!isChecked) {
-      const fromUserInfoList = this.state.fromTableDataList
-      const toUserInfoList = this.state.toTableDataList
+      const userListTableA = this.state.dataListTableA
+      const userListTableB = this.state.dataListTableB
 
-      const deleteItem = toUserInfoList.splice(index, 1)
+      // Table(B)からチェックを外した行を削除
+      const deleteItem = userListTableB.splice(index, 1)
+      // 削除した行をTable(A)に追加
       const addItem = {
         isChecked: isChecked,
         userId: deleteItem[0].userId,
@@ -189,14 +102,22 @@ class TableManager extends React.Component<{}, TableManagerState> {
         mailAddress: deleteItem[0].mailAddress,
         teamId: deleteItem[0].teamId,
       }
-      fromUserInfoList.push(addItem)
+      userListTableA.push(addItem)
+
+      // TableManagerコンポーネントの状態を更新する。
       this.setState({
-        fromTableDataList: fromUserInfoList,
-        toTableDataList: toUserInfoList,
+        dataListTableA: userListTableA,
+        dataListTableB: userListTableB,
       })
     }
   }
 
+  /**
+   * ファイル選択ダイアログで選択したCSVファイルを読み込み、
+   * データをFromTableへ登録する。
+   * @param e ファイル選択ダイアログのファイル選択時Event
+   * @returns void
+   */
   async importCSV(e: any) {
     if (!(e.target instanceof HTMLInputElement)) {
       return
@@ -206,11 +127,11 @@ class TableManager extends React.Component<{}, TableManagerState> {
     }
 
     const file = this.parseCSV(await e.target.files[0].text())
-    console.log(file)
-    const fromUserInfoList: UserInfoItem[] = []
+
+    const userListTableA: UserInfoItem[] = []
     // eslint-disable-next-line array-callback-return
     file.map((item) => {
-      fromUserInfoList.push({
+      userListTableA.push({
         isChecked: false,
         userId: Number(item[0]),
         userName: item[1],
@@ -219,17 +140,31 @@ class TableManager extends React.Component<{}, TableManagerState> {
       })
     })
     this.setState({
-      fromTableDataList: fromUserInfoList,
+      dataListTableA: userListTableA,
     })
   }
 
+  /**
+   * CSVファイルのテキストデータから、
+   * 各項目の値を取り出して配列に格納する。
+   * @param data CSVファイルのテキストデータ
+   * @returns
+   */
   parseCSV(data: string): string[][] {
     return data.split('\r\n').map((row) => row.split(','))
   }
 
+  /**
+   * TableManagerコンポーネントが描画する仮想DOMを構築する。
+   * @returns 仮想DOM
+   */
   render() {
     return (
-      <>
+      <div className="main">
+        <div className="component-name">
+          <b>TableManagerComponent</b>
+        </div>
+        {/* ファイル選択ダイアログを開くボタン */}
         <input
           type="file"
           accept="text/csv"
@@ -237,37 +172,46 @@ class TableManager extends React.Component<{}, TableManagerState> {
         />
         <br />
         <br />
+        {/* Table(A)の表示/非表示を切り替えるチェックボックス */}
         <input
           type="checkbox"
-          checked={this.state.isDisplayedFromTable}
-          onChange={(e) => this.showTable(FROM_TABLE_ID, e)}
+          checked={this.state.isDisplayedTableA}
+          onChange={(e) => this.displayTable(FROM_TABLE_ID, e)}
         />
-        <div className={this.state.isDisplayedFromTable ? '' : 'hide'}>
-          From UserInfoTable
+        UserInfoTable(A)
+        <div className={this.state.isDisplayedTableA ? '' : 'hide'}>
+          {/* ./UserInfoTable/UserInfoTable.tsxから、
+              UserInfoTableコンポーネント(表本体)を読み込む。 */}
           <UserInfoTable
-            userInfoList={this.state.fromTableDataList}
+            isDisplayed={this.state.isDisplayedTableA}
+            userInfoList={this.state.dataListTableA}
             onChecked={(index, isChecked) => {
               this.moveItemFromFromListToToList(index, isChecked)
             }}
           />
         </div>
         <br />
+        {/* Table(B)の表示/非表示を切り替えるチェックボックス */}
         <input
           type="checkbox"
-          checked={this.state.isDisplayedToTable}
-          onChange={(e) => this.showTable(TO_TABLE_ID, e)}
+          checked={this.state.isDisplayedTableB}
+          onChange={(e) => this.displayTable(TO_TABLE_ID, e)}
         />
-        <div className={this.state.isDisplayedToTable ? '' : 'hide'}>
-          To UserInfoTable
+        UserInfoTable(B)
+        <div className={this.state.isDisplayedTableB ? '' : 'hide'}>
+          {/* UserInfoTableコンポーネント(表本体) */}
           <UserInfoTable
-            userInfoList={this.state.toTableDataList}
+            isDisplayed={this.state.isDisplayedTableB}
+            userInfoList={this.state.dataListTableB}
             onChecked={(index, isChecked) => {
               this.moveItemFromToListToFromList(index, isChecked)
             }}
           />
         </div>
         <br />
-        CSV Text
+        {/* 読み込むCSVファイルのサンプル値 */}
+        <p>Appendix.</p>
+        <p>CSV Text</p>
         <p>
           1,User1,user1@xxx.xx,1
           <br />
@@ -289,14 +233,22 @@ class TableManager extends React.Component<{}, TableManagerState> {
           <br />
           10,User10,user10@xxx.xx,10
         </p>
-      </>
+      </div>
     )
   }
 }
 
+/**
+ * index.tsxから最初に読まれるMain関数的なコンポーネント
+ * @returns void
+ */
 const App: React.FC = () => {
   return (
     <div className="main">
+      <div className="component-name">
+        <b>AppComponent</b>
+      </div>
+      {/* TableManagerコンポーネントを表示する。 */}
       <TableManager />
     </div>
   )

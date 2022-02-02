@@ -1,62 +1,13 @@
-div.main {
-  margin: 20px;
+.main {
+  margin: 10px;
+  padding: 10px;
+  border: 2px solid black;
 }
 
-/* button.btn-add {
-    margin-bottom: 10px;
-} */
-
-div.detail {
-  width: 450px;
-  min-height: 24px;
-  padding: 3px;
-  border: 1px solid black;
-  border-top: none;
-  border-left: none;
-  border-right: none;
-}
-
-div.detail div.checkbox-and-todo {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-justify-content: flex-start;
-  justify-content: flex-start;
-}
-
-div.todo {
-  -webkit-flex-grow: 1;
-  flex-grow: 1;
-}
-
-div.todo input[type='text'] {
-  width: 250px;
-  height: 18px;
-  float: left;
-}
-
-div.due-date {
-  width: 200px;
-  margin-left: 44px;
-  /* float: right; */
-  color: red;
-  font-size: small;
-}
-
-div.due-date input[type='date'] {
-  width: 130px;
-  float: right;
-  color: black;
-}
-
-div.round-checkbox {
-  width: 24px;
-  height: 24px;
-  margin-right: 20px;
-}
-
-div.on-going-area,
-div.finished-area {
-  margin-bottom: 20px;
+.component-name {
+  position: relative;
+  font-size: 1.5;
+  top: -10px;
 }
 
 table {

@@ -4,13 +4,13 @@ import './CustomRoundLabelCheckbox.css'
 /**
  * Properties of the CustomRoundLabelCheckbox.
  * @param idx Checkbox number.
- * @param checked Checked or not checked.
- * @param onCheckChange Event when the state of checkbox changes.
+ * @param checked Checked state.
+ * @param onCheckChanged Event when the state of checkbox changed.
  */
 type CustomRoundLabelCheckboxProps = {
   idx: number
   checked: boolean
-  onCheckChange: (checked: boolean) => void
+  onCheckChanged: (checked: boolean) => void
 }
 
 /**
@@ -22,7 +22,7 @@ const CustomRoundLabelCheckbox: React.FC<CustomRoundLabelCheckboxProps> = (
   // Event handler when the checkbox is clicked.
   const handleClick = () => {
     console.log('click ' + props.idx + '    checed: ' + !props.checked)
-    props.onCheckChange(!props.checked)
+    props.onCheckChanged(!props.checked)
   }
 
   return (

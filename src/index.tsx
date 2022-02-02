@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals'
 
 ReactDOM.render(
   <React.StrictMode>
+    {/* ./App.tsxのAppコンポーネントを表示する。 */}
     <App />
   </React.StrictMode>,
   document.getElementById('root'),
