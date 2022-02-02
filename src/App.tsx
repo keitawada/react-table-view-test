@@ -179,7 +179,7 @@ class TableManager extends React.Component<{}, TableManagerState> {
           onChange={(e) => this.displayTable(FROM_TABLE_ID, e)}
         />
         UserInfoTable(A)
-        <div className={this.state.isDisplayedTableA ? '' : 'hide'}>
+        <div>
           {/* ./UserInfoTable/UserInfoTable.tsxから、
               UserInfoTableコンポーネント(表本体)を読み込む。 */}
           <UserInfoTable
@@ -198,7 +198,7 @@ class TableManager extends React.Component<{}, TableManagerState> {
           onChange={(e) => this.displayTable(TO_TABLE_ID, e)}
         />
         UserInfoTable(B)
-        <div className={this.state.isDisplayedTableB ? '' : 'hide'}>
+        <div>
           {/* UserInfoTableコンポーネント(表本体) */}
           <UserInfoTable
             isDisplayed={this.state.isDisplayedTableB}
